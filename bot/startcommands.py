@@ -1,0 +1,43 @@
+# Библиотека для работы с Ботом
+from aiogram import Router, types
+from aiogram.filters import CommandStart, Command
+from aiogram.types import Message, ReplyKeyboardRemove
+# Библиотека для загрузки переменных окружения из .env
+from decouple import config
+
+# Импорт данный для тестовых сообщений
+from database.dates import bot_messages
+
+start_router = Router()
+
+@start_router.message(CommandStart())
+async def cmd_start(message: Message):
+    name = message.from_user.first_name + " " + message.from_user.last_name
+    textmessage = f"<b>Привет, {name}!</b>\n\n"
+    textmessage += bot_messages.welcomemessage
+    photofile = types.FSInputFile(path = "database/images/startimage.png")
+    await message.answer_photo(photo = photofile, caption = textmessage, reply_markup=ReplyKeyboardRemove())
+
+@start_router.message(Command('help'))
+async def cmd_help(message: Message):
+    name = message.from_user.first_name + " " + message.from_user.last_name
+    textmessage = f"Уважаемый, <b>{name}</b>\n\n"
+    textmessage += bot_messages.helpmessage
+    inline_button = [
+        [types.InlineKeyboardButton(text = "Технический специалист", url = config('TECHNICALSPRC'))]
+    ]
+    photo = types.FSInputFile(path="database/images/developer.png")
+    markup = types.InlineKeyboardMarkup(inline_keyboard = inline_button)
+    await message.answer_photo(caption = textmessage, photo=photo, reply_markup=markup)
+
+@start_router.message(Command('helpfounder'))
+async def cmd_help(message: Message):
+    name = message.from_user.first_name + " " + message.from_user.last_name
+    textmessage = f"Уважаемый, <b>{name}</b>\n\n"
+    textmessage += bot_messages.helpfoundermessage
+    inline_button = [
+        [types.InlineKeyboardButton(text=config('NAMEFOUNDER1'), url=config('FOUNDER1'))],
+        [types.InlineKeyboardButton(text=config('NAMEFOUNDER2'), url=config('FOUNDER2'))]
+    ]
+    markup = types.InlineKeyboardMarkup(inline_keyboard=inline_button)
+    await message.answer(text=textmessage, reply_markup=markup)
