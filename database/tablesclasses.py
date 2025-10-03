@@ -144,22 +144,44 @@ def insert_user_dates_in_database(data):
     logging.info("Функция вставки данных в базу")
     Session = sessionmaker(engine)
     Base.metadata.create_all(engine)
-    with Session() as session:
-        create_users(Users(
-            first_name=data['firstname'],
-            middle_name=data['middlename'],
-            last_name=data['lastname'],
-            birth_date=data['age'],
-            rating=0,
-            id_telegram=data['telegramid'],
-            id_town=1,
-            id_kind=1,
-            id_level=1,
-            id_type=1,
-            id_place=1,
-            description=data['discription']), session)
-    session.commit()
-    logging.info("Данные успешно добавлены в базу данных")
+    try:
+        with Session() as session:
+            '''create_users(Users(
+                first_name=data['firstname'],
+                middle_name=data['middlename'],
+                last_name=data['lastname'],
+                birth_date=data['age'],
+                rating=0,
+                id_telegram=data['telegramid'],
+                id_town=1,
+                id_kind=1,
+                id_level=1,
+                id_type=1,
+                id_place=1,
+                description=data['discription']), session)'''
+
+            fake = Faker("ru_RU")
+            create_users(Users(
+                first_name=fake.first_name_female(),
+                middle_name=fake.middle_name_female(),
+                last_name=fake.last_name_female(),
+                birth_date=fake.date_of_birth(minimum_age=15,
+                                              maximum_age=40).strftime(
+                    "%d.%m.%Y"),
+                rating=fake.random_int(min=0, max=60),
+                id_telegram=0,
+                id_town=fake.random_int(min=0, max=18),
+                id_kind=fake.random_int(min=0, max=18),
+                id_level=fake.random_int(min=0, max=2),
+                id_type=fake.random_int(min=0, max=1),
+                id_place=fake.random_int(min=0, max=3),
+                description=""), session)
+    except:
+        session.rollback()
+        raise
+    else:
+        session.commit()
+        logging.info("Данные успешно добавлены в базу данных")
     '''
     text = bot_messages.messagefinalregistration
     text += "\n\n"
