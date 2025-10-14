@@ -1,6 +1,6 @@
 # Библиотека для работы с базой данных
 from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
-from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy import Integer, String, ForeignKey, select
 # Импорт базового класса Base
 from database.baseclass import Base
 # Импорт библиотеки для создания случайных данных
@@ -144,57 +144,51 @@ def insert_user_dates_in_database(data):
     logging.info("Функция вставки данных в базу")
     Session = sessionmaker(engine)
     Base.metadata.create_all(engine)
-    try:
-        with Session() as session:
-            '''create_users(Users(
+    with Session() as session:
+        try:
+            create_users(Users(
                 first_name=data['firstname'],
                 middle_name=data['middlename'],
                 last_name=data['lastname'],
                 birth_date=data['age'],
                 rating=0,
                 id_telegram=data['telegramid'],
-                id_town=1,
-                id_kind=1,
-                id_level=1,
-                id_type=1,
-                id_place=1,
-                description=data['discription']), session)'''
+                id_town=find_id_in_table('towns', data['town']),
+                id_kind=find_id_in_table('kinds', data['typesport']),
+                id_level=find_id_in_table('levels', data['levelsport']),
+                id_type=find_id_in_table('type', data['typeaccaunt']),
+                id_place=find_id_in_table('places', data['place']),
+                description=data['discription']), session)
+        except:
+            session.rollback()
+            raise
+        else:
+            session.commit()
+            logging.info("Данные успешно добавлены в базу данных")
 
-            fake = Faker("ru_RU")
-            create_users(Users(
-                first_name=fake.first_name_female(),
-                middle_name=fake.middle_name_female(),
-                last_name=fake.last_name_female(),
-                birth_date=fake.date_of_birth(minimum_age=15,
-                                              maximum_age=40).strftime(
-                    "%d.%m.%Y"),
-                rating=fake.random_int(min=0, max=60),
-                id_telegram=0,
-                id_town=fake.random_int(min=0, max=18),
-                id_kind=fake.random_int(min=0, max=18),
-                id_level=fake.random_int(min=0, max=2),
-                id_type=fake.random_int(min=0, max=1),
-                id_place=fake.random_int(min=0, max=3),
-                description=""), session)
-    except:
-        session.rollback()
-        raise
-    else:
-        session.commit()
-        logging.info("Данные успешно добавлены в базу данных")
-    '''
-    text = bot_messages.messagefinalregistration
-    text += "\n\n"
-    text += "[" + str(dates['telegramid']) + "]\n"
-    text += "Имя:\n        " +  + "\n"
-    text += "Фамилия:\n        " +  + "\n"
-    text += "Отчество:\n        " +  + "\n"
-    text += "Дата рождения:\n        " + dates['age'] + "\n"
-    text += "Город:\n        " + dates['town'] + "\n"
-    text += "Тип спорта:\n        " + dates['typesport'] + "\n"
-    text += "Уровень подготовки:\n        " + dates['levelsport'] + "\n"
-    text += "Место подготовки:\n        " + dates['place'] + "\n"
-    text += "Тип аккаунта:\n        " + dates['typeaccaunt'] + "\n"
-    text += "Картинка:\n        " + dates['imageuser'] + "\n"
-    text += "Описание:\n        " +  + "\n"
-    '''
+# Функция поиска id в базе данных
+def find_id_in_table(nametable, data):
+    Session = sessionmaker(engine)
+    Base.metadata.create_all(engine)
+    with Session() as session:
+        try:
+            match(nametable):
+                case "towns":
+                    id = session.scalar(select(Towns).where(Towns.name == data))
+                    return id.id_town
+                case "kinds":
+                    id = session.scalar(select(Kinds).where(Kinds.name == data))
+                    return id.id_kind
+                case "levels":
+                    id = session.scalar(select(Levels).where(Levels.name == data))
+                    return id.id_level
+                case "type":
+                    id = session.scalar(select(Types).where(Types.name == data))
+                    return id.id_type
+                case "places":
+                    id = session.scalar(select(Places).where(Places.name == data))
+                    return id.id_place
+                case _:
+                    return None
+        except Exception as e:
+            print(e)

@@ -266,6 +266,11 @@ async def insert_dates_in_database(message: Message, state: FSMContext):
     insert_user_dates_in_database(dates)
     # Обнуляем состояние
     await state.clear()
+    # Отправляем сообщение об успешной регистрации
+    await message.answer("Аккаунт успешно зарегистрирован",
+                         reply_markup=returninlinemarkup(None,
+                                                         message.from_user.id))
+
 
 # Функция отправки сообщения о телеграмм канале
 @commandsrouter.message(F.text == buttons.textrulgroup)
