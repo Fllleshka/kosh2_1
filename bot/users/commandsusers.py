@@ -297,9 +297,12 @@ def checkuserformdatabase(userid):
     with Session() as session:
         # Делаем запрос в БД
         found_item = session.query(Users).filter_by(id_telegram = userid).first()
+        print(found_item.id_user)
         # Если объект найден
-        if found_item:
+        if found_item.id_user:
             logging.info(f"Пользователь с {userid} найден в базе")
+            return True
         # Если объект не найден
         else:
             logging.info(f"Пользователь с {userid} не найден в базе")
+            return False

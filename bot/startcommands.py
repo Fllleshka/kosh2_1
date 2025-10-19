@@ -7,6 +7,8 @@ from decouple import config
 
 # Импорт данный для тестовых сообщений
 from database.dates import bot_messages
+# Импорт функции поиска человека в БД
+from bot.users.commandsusers import checkuserformdatabase
 
 start_router = Router()
 
