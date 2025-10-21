@@ -75,10 +75,16 @@ def returnreplymarkup(role, id_user):
             kb_list.append([buttons.savedatestodatabase])
             kb_list.append([buttons.dataediting])
 
-        # Новый пользователь
-        case _:
+        case "newuser":
             kb_list.append([buttons.registrationnewuser])
             kb_list.append([buttons.buttonurlgroup])
+
+        case "registereduser":
+            kb_list.append([buttons.checkaccaunt])
+
+        # Новый пользователь
+        case _:
+            kb_list.append([buttons.checkaccaunt])
 
     return ReplyKeyboardMarkup(
         keyboard=kb_list,

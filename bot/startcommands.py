@@ -7,9 +7,10 @@ from decouple import config
 
 # Импорт данный для тестовых сообщений
 from database.dates import bot_messages
-# Импорт функции поиска человека в БД
-from bot.users.commandsusers import checkuserformdatabase
+# Импорт класса для генерации кнопочек
+from bot.buttons.choosebuttons import returnreplymarkup
 
+# Создаём роутер
 start_router = Router()
 
 @start_router.message(CommandStart())
@@ -18,7 +19,8 @@ async def cmd_start(message: Message):
     textmessage = f"<b>Привет, {name}!</b>\n\n"
     textmessage += bot_messages.welcomemessage
     photofile = types.FSInputFile(path = "database/images/startimage.png")
-    await message.answer_photo(photo = photofile, caption = textmessage, reply_markup=ReplyKeyboardRemove())
+    markup = returnreplymarkup(None, message.from_user.id)
+    await message.answer_photo(photo = photofile, caption = textmessage, reply_markup=markup)
 
 @start_router.message(Command('help'))
 async def cmd_help(message: Message):

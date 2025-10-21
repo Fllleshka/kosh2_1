@@ -17,8 +17,10 @@ class Buttons:
     savedatestodatabase = KeyboardButton(text=textsavedatestodatabase)
     textdataediting = "Редактирование данных"
     dataediting = KeyboardButton(text=textdataediting)
-    
-    
+
+    textcheckaccaunt = "Мой аккаунт"
+    checkaccaunt = KeyboardButton(text=textcheckaccaunt)
+
     '''
     self.btn1 = telebot.types.KeyboardButton("💪Я тренер💪")
     self.btn2 = telebot.types.KeyboardButton("🏅Я спортсмен🏅")

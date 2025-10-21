@@ -14,9 +14,9 @@ from database.tablesclasses import create_all_databases
 from bot.users.commandsusers import commandsrouter
 
 async def main():
-    # Подключаем роутер, который отвечает за обработку сообщений
+    # Подключаем роутер, который отвечает за обработку первоначальных сообщений
     dp.include_router(start_router)
-    # Подключаем роутер, который отвечает за работу с клиентами
+    # Подключаем роутер, который отвечает за работу с сообщений от клиентов клиентами
     dp.include_router(commandsrouter)
     # Удаляем webhook (рекомендация)
     await bot.delete_webhook(drop_pending_updates=True)

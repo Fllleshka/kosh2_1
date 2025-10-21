@@ -22,7 +22,7 @@ from create_bot import bot as BBot
 from bot.buttons.choosebuttons import returnreplymarkup, returninlinemarkup
 # Импорт сообщений для пользователей
 from database.dates import bot_messages
-
+# Импорт функции добавления данных в базу данных
 from database.tablesclasses import insert_user_dates_in_database
 
 commandsrouter = Router()
@@ -280,15 +280,17 @@ async def sendtelegramchannel(message: Message):
     await message.answer("⬇️Вот ссылка на наш телеграмм канал⬇️", reply_markup=returninlinemarkup(None, message.from_user.id))
 
 # Функция отправки любого сообщения, не по кнопке
-@commandsrouter.message(F.text)
-async def userpanel(message: Message):
+@commandsrouter.message(F.text == buttons.textcheckaccaunt)
+async def checkaccaunt(message: Message):
     # Проверка нахождения пользователя в базе
     if checkuserformdatabase(message.from_user.id) == True:
-        if F.text == buttons.textregistrationnewuser:
-            logging.info("!!!!!!!!!!!!!!!!")
+        await message.answer(
+            "Твой аккаунт есть в базе.\nВыбери что будем делать дальше!",
+            reply_markup=returnreplymarkup("registereduser", message.from_user.id))
     else:
-        await message.answer("Не могу найти ваш аккаунт в базе. Давайте заведём его!",
-                             reply_markup=returnreplymarkup(None, message.from_user.id))
+        await message.answer(
+            "Не могу найти ваш аккаунт в базе.\nДавайте заведём его!",
+            reply_markup=returnreplymarkup("newuser", message.from_user.id))
 
 # Функция поиска пользователя в БД
 def checkuserformdatabase(userid):
@@ -297,9 +299,8 @@ def checkuserformdatabase(userid):
     with Session() as session:
         # Делаем запрос в БД
         found_item = session.query(Users).filter_by(id_telegram = userid).first()
-        print(found_item.id_user)
         # Если объект найден
-        if found_item.id_user:
+        if found_item != None:
             logging.info(f"Пользователь с {userid} найден в базе")
             return True
         # Если объект не найден
