@@ -80,9 +80,11 @@ def returnreplymarkup(role, id_user):
             kb_list.append([buttons.buttonurlgroup])
 
         case "registereduser":
-            kb_list.append([buttons.checkaccaunt])
+            kb_list.append([buttons.checkprofiletoother])
+            kb_list.append([buttons.checkfindtrainer])
+            kb_list.append([buttons.checkfindstalls])
+            kb_list.append([buttons.checkparticipation])
 
-        # Новый пользователь
         case _:
             kb_list.append([buttons.checkaccaunt])
 

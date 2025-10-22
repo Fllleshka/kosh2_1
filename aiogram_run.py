@@ -10,12 +10,16 @@ from bot.startcommands import start_router
 from database.baseclass import Base
 # Импорт функции создания всех таблиц в БД
 from database.tablesclasses import create_all_databases
-# Импорт роутера который отвечает за взаимодействие с пользователем
+# Импорт роутера, который отвечает за взаимодействие с пользователем
 from bot.users.commandsusers import commandsrouter
+# Импорт роутера, который отвечает за регистрацию пользователя
+from bot.users.registration import registration
 
 async def main():
     # Подключаем роутер, который отвечает за обработку первоначальных сообщений
     dp.include_router(start_router)
+    # Подключаем роутер, который отвечает за обработку сообщений регистрации
+    dp.include_router(registration)
     # Подключаем роутер, который отвечает за работу с сообщений от клиентов клиентами
     dp.include_router(commandsrouter)
     # Удаляем webhook (рекомендация)

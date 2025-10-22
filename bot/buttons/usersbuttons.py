@@ -4,45 +4,33 @@ from aiogram.types import KeyboardButton, InlineKeyboardButton
 from database.dates import helpdates
 
 class Buttons:
-    # Инициализация класса
-    #def __init__(self):
+    # Регистрация
     textregistrationnewuser = "Зарегистрироваться"
     registrationnewuser = KeyboardButton(text=textregistrationnewuser)
+    # Получение информации
     textrulgroup = "Получить полезную информацию о нас"
     buttonurlgroup = KeyboardButton(text=textrulgroup)
+    # Телеграмм канал
     urlgroup = "https://t.me/koshsports"
     buttoninluneurlgroup = InlineKeyboardButton(text="Сообщениство Kosh", url=urlgroup)
-
+    # Сохранение данный в базу
     textsavedatestodatabase = "Сохранение данных в БД"
     savedatestodatabase = KeyboardButton(text=textsavedatestodatabase)
+    # Редактирование данных
     textdataediting = "Редактирование данных"
     dataediting = KeyboardButton(text=textdataediting)
-
+    # Проверка аккаунта
     textcheckaccaunt = "Мой аккаунт"
     checkaccaunt = KeyboardButton(text=textcheckaccaunt)
-
-    '''
-    self.btn1 = telebot.types.KeyboardButton("💪Я тренер💪")
-    self.btn2 = telebot.types.KeyboardButton("🏅Я спортсмен🏅")
-    self.btn3 = telebot.types.KeyboardButton("🧐Я просто интересуюсь🧐")
-    self.btn4 = telebot.types.KeyboardButton("Найти тренера")
-    self.btn6 = telebot.types.KeyboardButton(
-        "Найти партнёра для занятий спортом")
-    self.btn7 = telebot.types.KeyboardButton(
-        "Принять участие в соревнованиях")
-
-    self.btn9 = telebot.types.KeyboardButton("Мой профиль 💪")
-    self.btn10 = telebot.types.KeyboardButton("Найти спортсмена")
-    self.btn11 = telebot.types.KeyboardButton("Моего варианта нет")
-    self.btn12 = telebot.types.KeyboardButton("Мой профиль для других")
-    self.btntelegramchannel = telebot.types.InlineKeyboardButton(
-        "Kosh Sports", telegrampath)
-    self.competitiontable = telebot.types.InlineKeyboardButton(
-        "Kosh Sports Table", googlesheetcompetitiontable)
-    self.sendinformation = telebot.types.KeyboardButton(
-        "Отправить данные на сервер")
-    self.changeprofileinfo = telebot.types.KeyboardButton(
-        "Отредактировать профиль")
-    self.sendmessageadmin = telebot.types.InlineKeyboardButton("Админ",
-                                                               adminchannel)
-    '''
+    # Профиль для других
+    textprofiletoother = "Мой профиль для других"
+    checkprofiletoother = KeyboardButton(text=textprofiletoother)
+    # Найти тренера
+    textfindtrainer = "Найти тренера"
+    checkfindtrainer = KeyboardButton(text=textfindtrainer)
+    # Найти партнёра
+    textfindstalls = "Найти партнёра для занятий спортом"
+    checkfindstalls = KeyboardButton(text=textfindstalls)
+    # Участие в соревнованиях
+    textparticipation = "Принять участие в соревнованиях"
+    checkparticipation = KeyboardButton(text=textparticipation)
