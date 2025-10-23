@@ -192,3 +192,40 @@ def find_id_in_table(nametable, data):
                     return None
         except Exception as e:
             print(e)
+
+def find_name_in_table(nametable, id):
+    Session = sessionmaker(engine)
+    Base.metadata.create_all(engine)
+    with Session() as session:
+        try:
+            match (nametable):
+                case "towns":
+                    name = session.scalar(select(Towns).where(Towns.id_town == id))
+                    return name.name
+                case "kinds":
+                    name = session.scalar(select(Kinds).where(Kinds.id_kind == id))
+                    return name.name
+                case "levels":
+                    name = session.scalar(select(Levels).where(Levels.id_level == id))
+                    return name.name
+                case "type":
+                    name = session.scalar(select(Types).where(Types.id_type == id))
+                    return name.name
+                case "places":
+                    name = session.scalar(select(Places).where(Places.id_place == id))
+                    return name.name
+                case _:
+                    return None
+        except Exception as e:
+            print(e)
+
+# Функция поиска всех данных по id
+def find_all_data_from_database(userid):
+    Session = sessionmaker(engine)
+    Base.metadata.create_all(engine)
+    with Session() as session:
+        try:
+            data = session.scalar(select(Users).where(Users.id_telegram == userid))
+            return data
+        except Exception as e:
+            return None
