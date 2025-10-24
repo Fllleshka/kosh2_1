@@ -85,6 +85,9 @@ def returnreplymarkup(role, id_user):
             kb_list.append([buttons.checkfindstalls])
             kb_list.append([buttons.checkparticipation])
 
+        case "urlcompetitiontable":
+            kb_list.append([buttons.checkparticipation])
+
         case _:
             kb_list.append([buttons.checkaccaunt])
 

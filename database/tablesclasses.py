@@ -229,3 +229,19 @@ def find_all_data_from_database(userid):
             return data
         except Exception as e:
             return None
+
+# Функция поиска пользователя в БД
+def checkuserformdatabase(userid):
+    # Создаём сессию
+    Session = sessionmaker(bind=engine)
+    with Session() as session:
+        # Делаем запрос в БД
+        found_item = session.query(Users).filter_by(id_telegram = userid).first()
+        # Если объект найден
+        if found_item != None:
+            logging.info(f"Пользователь с {userid} найден в базе")
+            return True
+        # Если объект не найден
+        else:
+            logging.info(f"Пользователь с {userid} не найден в базе")
+            return False

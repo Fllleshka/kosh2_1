@@ -1,16 +1,17 @@
 # Импорт библиотеки для работы с ботом
 from aiogram import Router, F, types
 from aiogram.types import Message, ReplyKeyboardRemove
-# Библиотека для работы с базой данных
-from sqlalchemy.orm import sessionmaker
 # Импорт движка для работы с базой
 from database.baseclass import engine
+from database.dates import bot_messages
 # Импорт класса отвечающего за работу с таблицей Users
-from database.tablesclasses import Users, find_all_data_from_database, find_name_in_table
+from database.tablesclasses import find_all_data_from_database, find_name_in_table, checkuserformdatabase
 # Библиотека для логирования
 import logging
 # Импорт кнопок
 from bot.buttons.usersbuttons import Buttons
+# Библиотека для загрузки переменных окружения из .env
+from decouple import config
 
 # Импорт функций для возврата кнопок
 from bot.buttons.choosebuttons import returnreplymarkup, returninlinemarkup
@@ -25,7 +26,7 @@ async def sendtelegramchannel(message: Message):
         f"Пользователь {message.from_user.id} нажал на кнопку {buttons.textrulgroup}.")
     await message.answer("⬇️Вот ссылка на наш телеграмм канал⬇️", reply_markup=returninlinemarkup(None, message.from_user.id))
 
-# Функция отправки обработки кнопки "Мой аккаунт"
+# Функция обработки кнопки "Мой аккаунт"
 @commandsrouter.message(F.text == buttons.textcheckaccaunt)
 async def checkaccaunt(message: Message):
     # Проверка нахождения пользователя в базе
@@ -38,7 +39,7 @@ async def checkaccaunt(message: Message):
             "Не могу найти ваш аккаунт в базе.\nДавайте заведём его!",
             reply_markup=returnreplymarkup("newuser", message.from_user.id))
 
-# Функция отправки обработки кнопки "Мой профиль для других"
+# Функция обработки кнопки "Мой профиль для других"
 @commandsrouter.message(F.text == buttons.textprofiletoother)
 async def myprofileforothers(message: Message):
     datesfromdb = find_all_data_from_database(message.from_user.id)
@@ -57,18 +58,19 @@ async def myprofileforothers(message: Message):
     photo = types.FSInputFile(path=pathtoimage)
     await message.answer_photo(caption = text, photo=photo)
 
-# Функция поиска пользователя в БД
-def checkuserformdatabase(userid):
-    # Создаём сессию
-    Session = sessionmaker(bind=engine)
-    with Session() as session:
-        # Делаем запрос в БД
-        found_item = session.query(Users).filter_by(id_telegram = userid).first()
-        # Если объект найден
-        if found_item != None:
-            logging.info(f"Пользователь с {userid} найден в базе")
-            return True
-        # Если объект не найден
-        else:
-            logging.info(f"Пользователь с {userid} не найден в базе")
-            return False
+# Функция обработки кнопки "Принять участие в соревнованиях"
+@commandsrouter.message(F.text == buttons.textparticipation)
+async def take_part_competiion(message: Message):
+
+    name = message.from_user.first_name + " " + message.from_user.last_name
+    textmessage = f"<b>Уважаемый, {name}!</b>\n\n"
+    textmessage += bot_messages.messagecompetitiontable
+    photofile = types.FSInputFile(path="database/images/startimage.png")
+    inline_button = [
+        [types.InlineKeyboardButton(text=Buttons.textparticipation,
+                                    url=config('googlesheetcompetitiontable'))]
+    ]
+    markup = types.InlineKeyboardMarkup(inline_keyboard=inline_button)
+    await message.answer_photo(caption=textmessage, photo=photofile,
+                               reply_markup=markup)
+

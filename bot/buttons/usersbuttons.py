@@ -33,4 +33,3 @@ class Buttons:
     checkfindstalls = KeyboardButton(text=textfindstalls)
     # Участие в соревнованиях
     textparticipation = "Принять участие в соревнованиях"
-    checkparticipation = KeyboardButton(text=textparticipation)
