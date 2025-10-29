@@ -111,11 +111,11 @@ def create_all_databases():
                         birth_date = fake.date_of_birth(minimum_age=15, maximum_age=40).strftime("%d.%m.%Y"),
                         rating = fake.random_int(min=0, max=60),
                         id_telegram = 0,
-                        id_town = fake.random_int(min=0, max=18),
-                        id_kind = fake.random_int(min=0, max=18),
-                        id_level = fake.random_int(min=0, max=2),
-                        id_type = fake.random_int(min=0, max=1),
-                        id_place =  fake.random_int(min=0, max=3),
+                        id_town = fake.random_int(min=1, max=18),
+                        id_kind = fake.random_int(min=1, max=18),
+                        id_level = fake.random_int(min=1, max=3),
+                        id_type = fake.random_int(min=1, max=2),
+                        id_place =  fake.random_int(min=1, max=4),
                         description = ""), session)
                 # Женщины
                 else:
@@ -126,11 +126,11 @@ def create_all_databases():
                         birth_date = fake.date_of_birth(minimum_age=15, maximum_age=40).strftime("%d.%m.%Y"),
                         rating = fake.random_int(min=0, max=60),
                         id_telegram = 0,
-                        id_town = fake.random_int(min=0, max=18),
-                        id_kind = fake.random_int(min=0, max=18),
-                        id_level = fake.random_int(min=0, max=2),
-                        id_type = fake.random_int(min=0, max=1),
-                        id_place =  fake.random_int(min=0, max=3),
+                        id_town = fake.random_int(min=1, max=18),
+                        id_kind = fake.random_int(min=1, max=18),
+                        id_level = fake.random_int(min=1, max=3),
+                        id_type = fake.random_int(min=1, max=2),
+                        id_place =  fake.random_int(min=1, max=4),
                         description = ""), session)
             logging.info("База данных успешно сгенерированная и заполнена тестовыми данными")
         except:
@@ -193,6 +193,7 @@ def find_id_in_table(nametable, data):
         except Exception as e:
             print(e)
 
+# Функция поиска имени(названия) по id в базе
 def find_name_in_table(nametable, id):
     Session = sessionmaker(engine)
     Base.metadata.create_all(engine)
@@ -245,3 +246,31 @@ def checkuserformdatabase(userid):
         else:
             logging.info(f"Пользователь с {userid} не найден в базе")
             return False
+
+# Функция поиска анкет, которые подходят под роль
+def selectdatesfromdatabasebyrole(role):
+    # Создаём сессию
+    Session = sessionmaker(bind=engine)
+    match(role):
+        case "trainer":
+            with Session() as session:
+                # Делаем запрос в БД
+                found_items = session.query(Users).filter_by(id_type=1).all()
+                # Если объект найден
+                if found_items != None:
+                    return found_items
+                # Если объект не найден
+                else:
+                    return None
+        case "athlete":
+            with Session() as session:
+                # Делаем запрос в БД
+                found_items = session.query(Users).filter_by(id_type=2).all()
+                # Если объект найден
+                if found_items != None:
+                    return found_items
+                # Если объект не найден
+                else:
+                    return None
+        case _:
+            return None

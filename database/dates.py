@@ -1,4 +1,3 @@
-
 # Класс сообщений
 class bot_messages:
     # Приветственное сообщение (/start)
@@ -55,8 +54,6 @@ class bot_messages:
     messageinsertdatesindatabase = "Поздравляю, ты теперь вместе с нами!"
     # Сообщение о том что такой профиль уже найден в базе данных
     messageprofilealreadyexists = "Выбери что будем делать с профилем."
-
-
 
 # Класс данных для Базы
 class dates_for_database:

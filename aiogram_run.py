@@ -14,6 +14,9 @@ from database.tablesclasses import create_all_databases
 from bot.users.commandsusers import commandsrouter
 # Импорт роутера, который отвечает за регистрацию пользователя
 from bot.users.registration import registration
+# Импорт роутера, который отвечает за функции поиска
+from bot.users.search import searchrouter
+
 
 async def main():
     # Подключаем роутер, который отвечает за обработку первоначальных сообщений
@@ -22,6 +25,8 @@ async def main():
     dp.include_router(registration)
     # Подключаем роутер, который отвечает за работу с сообщений от клиентов клиентами
     dp.include_router(commandsrouter)
+    # Подключаем роутер, который отвечает за работу с функциями поиска
+    dp.include_router(searchrouter)
     # Удаляем webhook (рекомендация)
     await bot.delete_webhook(drop_pending_updates=True)
     # Подгружаем первоначальные команды

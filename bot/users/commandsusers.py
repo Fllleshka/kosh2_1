@@ -62,7 +62,7 @@ async def myprofileforothers(message: Message):
 @commandsrouter.message(F.text == buttons.textparticipation)
 async def take_part_competiion(message: Message):
 
-    name = message.from_user.first_name + " " + message.from_user.last_name
+    name = create_appeal(message)
     textmessage = f"<b>Уважаемый, {name}!</b>\n\n"
     textmessage += bot_messages.messagecompetitiontable
     photofile = types.FSInputFile(path="database/images/startimage.png")
@@ -74,3 +74,10 @@ async def take_part_competiion(message: Message):
     await message.answer_photo(caption=textmessage, photo=photofile,
                                reply_markup=markup)
 
+# Вычисления обращения к пользователю
+def create_appeal(message):
+    try:
+        name = message.from_user.first_name + " " + message.from_user.last_name
+    except:
+        name = "[Не смог определить ваше имя]"
+    return name

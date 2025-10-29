@@ -1,4 +1,6 @@
 # Библиотека для работы с Ботом
+from types import NoneType
+
 from aiogram import Router, types
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, ReplyKeyboardRemove
@@ -9,13 +11,14 @@ from decouple import config
 from database.dates import bot_messages
 # Импорт класса для генерации кнопочек
 from bot.buttons.choosebuttons import returnreplymarkup
-
+# Импорт функции для обработки обращения
+from bot.users.commandsusers import create_appeal
 # Создаём роутер
 start_router = Router()
 
 @start_router.message(CommandStart())
 async def cmd_start(message: Message):
-    name = message.from_user.first_name + " " + message.from_user.last_name
+    name = create_appeal(message)
     textmessage = f"<b>Привет, {name}!</b>\n\n"
     textmessage += bot_messages.welcomemessage
     photofile = types.FSInputFile(path = "database/images/startimage.png")
@@ -24,7 +27,7 @@ async def cmd_start(message: Message):
 
 @start_router.message(Command('help'))
 async def cmd_help(message: Message):
-    name = message.from_user.first_name + " " + message.from_user.last_name
+    name = create_appeal(message)
     textmessage = f"Уважаемый, <b>{name}</b>\n\n"
     textmessage += bot_messages.helpmessage
     inline_button = [
@@ -36,7 +39,7 @@ async def cmd_help(message: Message):
 
 @start_router.message(Command('helpfounder'))
 async def cmd_help(message: Message):
-    name = message.from_user.first_name + " " + message.from_user.last_name
+    name = create_appeal(message)
     textmessage = f"Уважаемый, <b>{name}</b>\n\n"
     textmessage += bot_messages.helpfoundermessage
     inline_button = [
@@ -45,3 +48,4 @@ async def cmd_help(message: Message):
     ]
     markup = types.InlineKeyboardMarkup(inline_keyboard=inline_button)
     await message.answer(text=textmessage, reply_markup=markup)
+
