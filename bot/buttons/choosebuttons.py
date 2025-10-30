@@ -6,6 +6,8 @@ from bot.buttons.usersbuttons import Buttons
 import logging
 # Импорт класса работающего с базой данных
 from database.selectdates import selectdatesfromDB
+# Подключение кнопок
+from aiogram.types import InlineKeyboardButton
 
 def returnreplymarkup(role, id_user):
     # Объявление класса с кнопками
@@ -98,13 +100,19 @@ def returnreplymarkup(role, id_user):
         input_field_placeholder="Воспользуйтесь меню:"
     )
 
-def returninlinemarkup(role, id_user):
+def returninlinemarkup(role, id_user, allcontacts = 0, currentcontact = 0):
     # Объявление класса с кнопками
     buttons = Buttons()
     # Создание кнопок
     kb_list = [[]]
     match (role):
-
+        case "carusel":
+            textcenter = str(currentcontact) + "/" + str(allcontacts)
+            centersection = InlineKeyboardButton(text=textcenter, callback_data = 'center')
+            kb_list.append([buttons.previousbutton, centersection, buttons.nextbutton])
+            contactbutton = InlineKeyboardButton(text='Связь',
+                                                  url = id_user)
+            kb_list.append([contactbutton])
         case _:
             kb_list.append([buttons.buttoninluneurlgroup])
 

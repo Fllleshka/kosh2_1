@@ -34,3 +34,12 @@ class Buttons:
     # Участие в соревнованиях
     textparticipation = "Принять участие в соревнованиях"
     checkparticipation = KeyboardButton(text=textparticipation)
+
+    # Стрелочка влево (предыдущий вариант)
+    textpreviousbutton = "<--"
+    previousbutton = InlineKeyboardButton(text = textpreviousbutton,
+                                          callback_data = 'previos')
+    # Стрелочка вправо (следующий вариант)
+    textnextbutton = "-->"
+    nextbutton = InlineKeyboardButton(text = textnextbutton,
+                                          callback_data = 'next')
