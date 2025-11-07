@@ -107,7 +107,7 @@ def returninlinemarkup(role, id_user, allcontacts = 0, currentcontact = 0):
     kb_list = [[]]
     match (role):
         case "carusel":
-            textcenter = str(currentcontact) + "/" + str(allcontacts)
+            textcenter = str(currentcontact+1) + "/" + str(allcontacts)
             centersection = InlineKeyboardButton(text=textcenter, callback_data = 'center')
             kb_list.append([buttons.previousbutton, centersection, buttons.nextbutton])
             contactbutton = InlineKeyboardButton(text='Связь',

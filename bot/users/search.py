@@ -71,6 +71,7 @@ async def sendtelegramchannel(message: Message):
 async def previosform(message: Message):
     print("Previus!!!")
     print("ID Callback previos", message.message.message_id)
+    await bot.delete_message(chat_id=message.message.chat.id, message_id=message.message.message_id)
 
 # Функция обработки нажатия кнопки next
 @searchrouter.callback_query(F.data.startswith('next'))
