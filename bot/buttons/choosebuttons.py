@@ -77,15 +77,19 @@ def returnreplymarkup(role, id_user):
             kb_list.append([buttons.savedatestodatabase])
             kb_list.append([buttons.dataediting])
 
+        # Возвратные данные для новых пользователей
         case "newuser":
             kb_list.append([buttons.registrationnewuser])
             kb_list.append([buttons.buttonurlgroup])
 
+        # Возвратные денные для зарегистрированных пользователей
         case "registereduser":
             kb_list.append([buttons.checkprofiletoother])
+            kb_list.append([buttons.editprofile])
             kb_list.append([buttons.checkfindtrainer])
             kb_list.append([buttons.checkfindstalls])
             kb_list.append([buttons.checkparticipation])
+
 
         case "urlcompetitiontable":
             kb_list.append([buttons.checkparticipation])
@@ -100,19 +104,71 @@ def returnreplymarkup(role, id_user):
         input_field_placeholder="Воспользуйтесь меню:"
     )
 
-def returninlinemarkup(role, id_user, allcontacts = 0, currentcontact = 0):
+def returninlinemarkup(role, id_user, datafromdb = None, currentcontact = 0):
     # Объявление класса с кнопками
     buttons = Buttons()
     # Создание кнопок
     kb_list = [[]]
     match (role):
         case "carusel":
+            allcontacts = len(datafromdb)
             textcenter = str(currentcontact+1) + "/" + str(allcontacts)
+
+
+            # Стрелочка влево (предыдущий вариант)
+            textpreviousbutton = "<--"
+            if currentcontact - 1 < 0:
+                previoscontact = len(datafromdb)
+            else:
+                previoscontact = currentcontact - 1
+            callbackdataprevios = 'previos:' + str(previoscontact)
+            previousbutton = InlineKeyboardButton(text=textpreviousbutton,
+                                                  callback_data=callbackdataprevios)
+            logging.info("========================")
+            logging.info("callbackdataprevios: " + callbackdataprevios)
+
+
+            # Стрелочка вправо (следующий вариант)
+            textnextbutton = "-->"
+            if currentcontact + 1 > len(datafromdb):
+                nextcontact = 0
+            else:
+                nextcontact = currentcontact + 1
+            callbackdatanext = 'next:' + str(nextcontact)
+            nextbutton = InlineKeyboardButton(text=textnextbutton,
+                                              callback_data='next')
+            logging.info("callbackdatanext: " + callbackdatanext)
             centersection = InlineKeyboardButton(text=textcenter, callback_data = 'center')
-            kb_list.append([buttons.previousbutton, centersection, buttons.nextbutton])
+
+
+
+            kb_list.append([previousbutton, centersection, nextbutton])
             contactbutton = InlineKeyboardButton(text='Связь',
                                                   url = id_user)
             kb_list.append([contactbutton])
+            logging.info("========================")
+
+        case "changedatesinprofile":
+            # Кнопка редактирования имени
+            kb_list.append([buttons.editname])
+            # Кнопка редактирования фамилии
+            kb_list.append([buttons.editlastname])
+            # Кнопка редактирования отчества
+            kb_list.append([buttons.editmiddlename])
+            # Кнопка редактирования даты рождения
+            kb_list.append([buttons.editbirthdate])
+            # Кнопка редактирования города
+            #kb_list.append([buttons.])
+            # Кнопка редактирования типа спорта
+            #kb_list.append([buttons.])
+            # Кнопка редактирования уровня подготовки
+            #kb_list.append([buttons.])
+            # Кнопка редактирования места проведения
+            #kb_list.append([buttons.])
+            # Кнопка редактирования картинки профиля
+            #kb_list.append([buttons.])
+            # Кнопка редактирования описания
+            #kb_list.append([buttons.])
         case _:
             kb_list.append([buttons.buttoninluneurlgroup])
 

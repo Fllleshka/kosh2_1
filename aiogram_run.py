@@ -16,7 +16,8 @@ from bot.users.commandsusers import commandsrouter
 from bot.users.registration import registration
 # Импорт роутера, который отвечает за функции поиска
 from bot.users.search import searchrouter
-
+# Импорт роутера, который отвечает за функции редактирования профиля
+from bot.users.changedatesinprofile import editprofile
 
 async def main():
     # Подключаем роутер, который отвечает за обработку первоначальных сообщений
@@ -27,6 +28,8 @@ async def main():
     dp.include_router(commandsrouter)
     # Подключаем роутер, который отвечает за работу с функциями поиска
     dp.include_router(searchrouter)
+    # Подключаем роутер, который отвечает за работу с функцией редактирования данных в профиле
+    dp.include_router(editprofile)
     # Удаляем webhook (рекомендация)
     await bot.delete_webhook(drop_pending_updates=True)
     # Подгружаем первоначальные команды

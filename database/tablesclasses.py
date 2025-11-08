@@ -1,6 +1,6 @@
 # Библиотека для работы с базой данных
 from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
-from sqlalchemy import Integer, String, ForeignKey, select
+from sqlalchemy import Integer, String, ForeignKey, select, update
 # Импорт базового класса Base
 from database.baseclass import Base
 # Импорт библиотеки для создания случайных данных
@@ -274,3 +274,26 @@ def selectdatesfromdatabasebyrole(role):
                     return None
         case _:
             return None
+
+# Функция обновления данных в бд
+def updatedatesfromusers(telegramid, column, data):
+    # Создаём сессию
+    Session = sessionmaker(bind=engine)
+    match(column):
+        case 'first_name':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(first_name = data)
+        case 'last_name':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(last_name=data)
+        case 'middle_name':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(middle_name=data)
+        case 'birth_date':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(birth_date=data)
+        case _:
+                pass
+    with Session() as session:
+        session.execute(updatestr)
+        session.commit()
