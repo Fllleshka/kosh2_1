@@ -106,7 +106,7 @@ async def editmiddlename_insertdatesindb(message: Message, state: FSMContext):
     await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 
 # Функция редактирования даты рождения
-@editprofile.callback_query(F.data == "birthdate")
+@editprofile.callback_query(F.data == "editbirthdate")
 async def editbirthdate_callback(call: CallbackQuery, state: FSMContext):
     logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.texteditbirthdate}.")
     statefunction = EditStates.birthdate

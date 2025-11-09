@@ -30,30 +30,44 @@ class Buttons:
     editprofile = KeyboardButton(text=texteditprofile)
     # Кнопка редактирования имени
     texteditname = "Имя"
-    editname = InlineKeyboardButton(text=texteditname, callback_data='editname')
+    editname = InlineKeyboardButton(text=texteditname,
+                                    callback_data='editname')
     # Кнопка редактирования фамилии
     texteditlastname = "Фамилия"
-    editlastname = InlineKeyboardButton(text=texteditlastname, callback_data='editlastname')
+    editlastname = InlineKeyboardButton(text=texteditlastname,
+                                    callback_data='editlastname')
     # Кнопка редактирования отчества
     texteditmiddlename = "Отчество"
-    editmiddlename = InlineKeyboardButton(text=texteditmiddlename,callback_data='editmiddlename')
+    editmiddlename = InlineKeyboardButton(text=texteditmiddlename,
+                                    callback_data='editmiddlename')
     # Кнопка редактирования даты рождения
     texteditbirthdate = "Дата рождения"
     editbirthdate = InlineKeyboardButton(text=texteditbirthdate,
-                                          callback_data='birthdate')
-    #kb_list.append([buttons.])
+                                    callback_data='editbirthdate')
     # Кнопка редактирования города
-    #kb_list.append([buttons.])
+    textedittown = "Город"
+    edittown = InlineKeyboardButton(text=textedittown,
+                                    callback_data='edittown')
     # Кнопка редактирования типа спорта
-    #kb_list.append([buttons.])
+    textedittypesport = "Спорт"
+    edittypesport = InlineKeyboardButton(text=textedittypesport,
+                                    callback_data='edittypesport')
     # Кнопка редактирования уровня подготовки
-    #kb_list.append([buttons.])
+    texteditlevelsport = "Уровень подготовки"
+    editlevelsport = InlineKeyboardButton(text=texteditlevelsport,
+                                    callback_data='editlevelsport')
     # Кнопка редактирования места проведения
-    #kb_list.append([buttons.])
+    texteditplacetrain = "Место проведения"
+    editplacetrain = InlineKeyboardButton(text=texteditplacetrain,
+                                    callback_data='editplacetrain')
     # Кнопка редактирования картинки профиля
-    #kb_list.append([buttons.])
+    texteditimageprofile = "Картинка профиля"
+    editimageprofile = InlineKeyboardButton(text=texteditimageprofile,
+                                    callback_data='editimageprofile')
     # Кнопка редактирования описания
-    #kb_list.append([buttons.])
+    texteditdescription = "Описание"
+    editdescription = InlineKeyboardButton(text=texteditdescription,
+                                            callback_data='editdescription')
 
     # Найти тренера
     textfindtrainer = "Найти тренера"
