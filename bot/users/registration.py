@@ -244,7 +244,7 @@ async def registration_final(message: Message, state: FSMContext):
     logging.info(f"Пользователь {message.from_user.id} отправил описание к своей анкете: {message.text}")
     statefunction = Registration.insertdates
     # Сохраняем введённое описание
-    await state.update_data(discription = "")
+    await state.update_data(discription = message.text)
     # Установка состояния сохранения данных об аккаунте
     await state.set_state(statefunction)
     # Отправка сообщения

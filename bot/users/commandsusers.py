@@ -80,5 +80,5 @@ def create_appeal(message):
     try:
         name = message.from_user.first_name + " " + message.from_user.last_name
     except:
-        name = "[Не смог определить ваше имя]"
+        name = "Друг"
     return name

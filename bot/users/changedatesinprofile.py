@@ -14,7 +14,8 @@ from bot.buttons.choosebuttons import returnreplymarkup, returninlinemarkup
 # Импорт бота для отправки сообщений
 from create_bot import bot as BBot
 # Импорт функции вставки данных в таблицу
-from database.tablesclasses import updatedatesfromusers
+from database.tablesclasses import updatedatesfromusers, find_id_in_table
+
 # Роутер
 editprofile = Router()
 buttons = Buttons()
@@ -25,6 +26,7 @@ class EditStates(StatesGroup):
     middlename = State()
     lastname = State()
     birthdate = State()
+    town = State()
 
 # Обработка кнопки "Изменить профиль"
 @editprofile.message(F.text == buttons.texteditprofile)
@@ -129,6 +131,30 @@ async def editbirthdate_insertdatesindb(message: Message, state: FSMContext):
     await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 
 # Функция редактирования города
+@editprofile.callback_query(F.data == "edittown")
+async def edittown_callback(call: CallbackQuery, state: FSMContext):
+    logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.textedittown}.")
+    statefunction = EditStates.town
+    await state.set_state(statefunction)
+    markup = returnreplymarkup('registrationtowns', call.message.from_user.id)
+    await call.message.answer("Выберите новый город из списка ниже", reply_markup = markup)
+@editprofile.message(EditStates.town, F.text)
+async def edittown_insertdatesindb(message: Message, state: FSMContext):
+    # Логирование
+    logging.info(f"Пользователь {message.from_user.id} ввёл новый город: {message.text}")
+    # Получаем нужное id города
+    town = message.text
+    id_town = find_id_in_table('towns', town)
+    # Вставляем данные в базу данных
+    updatedatesfromusers(message.from_user.id, 'town_date', id_town)
+    # Обнуляем состояние
+    await state.clear()
+    # Отправка сообщения 1
+    await BBot.send_message(message.chat.id, text="Ваш город изменен.", reply_markup = ReplyKeyboardRemove())
+    # Отправка сообщения 2
+    textmessage = bot_messages.messageeditprofile2
+    markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
+    await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 
 # Функция редактирования типа спорта
 

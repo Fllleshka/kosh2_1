@@ -14,7 +14,7 @@ class Buttons:
     urlgroup = "https://t.me/koshsports"
     buttoninluneurlgroup = InlineKeyboardButton(text="Сообщениство Kosh", url=urlgroup)
     # Сохранение данный в базу
-    textsavedatestodatabase = "Сохранение данных в БД"
+    textsavedatestodatabase = "Сохранение данных"
     savedatestodatabase = KeyboardButton(text=textsavedatestodatabase)
     # Редактирование данных
     textdataediting = "Редактирование данных"

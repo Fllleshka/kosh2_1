@@ -292,6 +292,9 @@ def updatedatesfromusers(telegramid, column, data):
         case 'birth_date':
             updatestr = update(Users).where(
                 Users.id_telegram == telegramid).values(birth_date=data)
+        case 'town_date':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(id_town=data)
         case _:
                 pass
     with Session() as session:
