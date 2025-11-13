@@ -58,6 +58,12 @@ class bot_messages:
     messageeditprofile1 = "Что будем редактировать?"
     messageeditprofile2 = "⬇️Выбери кнопку ниже⬇️"
 
+    # Сообщение после окончания регистрации
+    finalregrstrationmessage2 = "Спортивное сообщество\n"
+    finalregrstrationmessage2 += "<a href='https://t.me/koshsports'><b>Kosh Sports</b></a>\n\n"
+    finalregrstrationmessage2 += "Здесь спортсмены находят себе единомышленников и лучших тренеров, а тренеры находят талантливых учеников.\n"
+    finalregrstrationmessage2 += "Мы ждём только тебя!"
+
 # Класс данных для Базы
 class dates_for_database:
     # Список городов

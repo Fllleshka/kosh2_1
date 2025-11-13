@@ -263,6 +263,8 @@ async def insert_dates_in_database(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправляем сообщение об успешной регистрации
-    await message.answer("Аккаунт успешно зарегистрирован",
+    await message.answer("Аккаунт успешно зарегистрирован"),
+    # Отправляем сообщение о telegram канале
+    await message.answer(bot_messages.finalregrstrationmessage2,
                          reply_markup=returninlinemarkup(None,
                                                          message.from_user.id))

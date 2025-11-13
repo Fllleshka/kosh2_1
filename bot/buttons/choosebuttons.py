@@ -158,17 +158,17 @@ def returninlinemarkup(role, id_user, datafromdb = None, currentcontact = 0):
             # Кнопка редактирования даты рождения
             kb_list.append([buttons.editbirthdate])
             # Кнопка редактирования города
-            #kb_list.append([buttons.])
+            kb_list.append([buttons.edittown])
             # Кнопка редактирования типа спорта
-            #kb_list.append([buttons.])
+            kb_list.append([buttons.edittypesport])
             # Кнопка редактирования уровня подготовки
-            #kb_list.append([buttons.])
+            kb_list.append([buttons.editlevelsport])
             # Кнопка редактирования места проведения
-            #kb_list.append([buttons.])
+            kb_list.append([buttons.editplacetrain])
             # Кнопка редактирования картинки профиля
-            #kb_list.append([buttons.])
+            kb_list.append([buttons.editimageprofile])
             # Кнопка редактирования описания
-            #kb_list.append([buttons.])
+            kb_list.append([buttons.editdescription])
         case _:
             kb_list.append([buttons.buttoninluneurlgroup])
 
