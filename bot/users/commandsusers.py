@@ -56,8 +56,10 @@ async def myprofileforothers(message: Message):
     text += "Описание:\n        " + datesfromdb.description + "\n"
     pathtoimage = "database/images/users/" + str(message.from_user.id) + ".png"
     photo = types.FSInputFile(path=pathtoimage)
+    markup = returnreplymarkup("registereduser", message.chat.id)
     await message.answer_photo(caption = text,
-                               photo=photo)
+                               photo=photo,
+                               reply_markup=markup)
 
 # Функция обработки кнопки "Принять участие в соревнованиях"
 @commandsrouter.message(F.text == buttons.textparticipation)

@@ -90,6 +90,9 @@ def returnreplymarkup(role, id_user):
             kb_list.append([buttons.checkfindstalls])
             kb_list.append([buttons.checkparticipation])
 
+        # Возвратные данные после редактирования данных профиля
+        case "editdatesinprofile":
+            kb_list.append([buttons.checkprofiletoother])
 
         case "urlcompetitiontable":
             kb_list.append([buttons.checkparticipation])

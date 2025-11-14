@@ -27,6 +27,7 @@ class EditStates(StatesGroup):
     lastname = State()
     birthdate = State()
     town = State()
+    typesport = State()
 
 # Обработка кнопки "Изменить профиль"
 @editprofile.message(F.text == buttons.texteditprofile)
@@ -55,7 +56,8 @@ async def editname_insertdatesindb(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправка сообщения 1
-    await BBot.send_message(message.chat.id, text="Ваше имя изменено.", reply_markup = ReplyKeyboardRemove())
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваше имя изменено.", reply_markup = markup)
     # Отправка сообщения 2
     textmessage = bot_messages.messageeditprofile2
     markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
@@ -78,7 +80,8 @@ async def editlastname_insertdatesindb(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправка сообщения 1
-    await BBot.send_message(message.chat.id, text="Ваша фамилия изменена.", reply_markup = ReplyKeyboardRemove())
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваша фамилия изменена.", reply_markup = markup)
     # Отправка сообщения 2
     textmessage = bot_messages.messageeditprofile2
     markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
@@ -101,7 +104,8 @@ async def editmiddlename_insertdatesindb(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправка сообщения 1
-    await BBot.send_message(message.chat.id, text="Ваше отчество изменено.", reply_markup = ReplyKeyboardRemove())
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваше отчество изменено.", reply_markup = markup)
     # Отправка сообщения 2
     textmessage = bot_messages.messageeditprofile2
     markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
@@ -124,7 +128,8 @@ async def editbirthdate_insertdatesindb(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправка сообщения 1
-    await BBot.send_message(message.chat.id, text="Ваша дата рождения изменена.", reply_markup = ReplyKeyboardRemove())
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваша дата рождения изменена.", reply_markup = markup)
     # Отправка сообщения 2
     textmessage = bot_messages.messageeditprofile2
     markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
@@ -150,14 +155,41 @@ async def edittown_insertdatesindb(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправка сообщения 1
-    await BBot.send_message(message.chat.id, text="Ваш город изменен.", reply_markup = ReplyKeyboardRemove())
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваш город изменен.", reply_markup = markup)
     # Отправка сообщения 2
     textmessage = bot_messages.messageeditprofile2
     markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
     await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 
 # Функция редактирования типа спорта
+@editprofile.callback_query(F.data == "edittypesport")
+async def edittypesport_callback(call: CallbackQuery, state: FSMContext):
+    logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.textedittypesport}.")
+    statefunction = EditStates.typesport
+    await state.set_state(statefunction)
+    markup = returnreplymarkup('registrationtypesport', call.message.from_user.id)
+    await call.message.answer("Выберите новый тип спорта из списка ниже", reply_markup = markup)
+@editprofile.message(EditStates.typesport, F.text)
+async def edittypesport_insertdatesindb(message: Message, state: FSMContext):
+    # Логирование
+    logging.info(f"Пользователь {message.from_user.id} ввёл новый тип спорта: {message.text}")
+    # Получаем нужное id типа спорта
+    typesport = message.text
+    id_type = find_id_in_table('kinds', typesport)
+    print(id_type)
+    # Вставляем данные в базу данных
+    updatedatesfromusers(message.from_user.id, 'type_sport', id_type)
+    # Обнуляем состояние
+    await state.clear()
+    # Отправка сообщения 1
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваш тип спорта изменен.", reply_markup = markup)
 
+    # Отправка сообщения 2
+    textmessage = bot_messages.messageeditprofile2
+    markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
+    await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 # Функция редактирования уровня подготовки
 
 # Функция редактирования места проведения
