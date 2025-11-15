@@ -298,7 +298,15 @@ def updatedatesfromusers(telegramid, column, data):
         case 'type_sport':
             updatestr = update(Users).where(
                 Users.id_telegram == telegramid).values(id_kind=data)
-            print(updatestr)
+        case 'level_sport':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(id_level=data)
+        case 'place_train':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(id_place=data)
+        case 'description':
+            updatestr = update(Users).where(
+                Users.id_telegram == telegramid).values(description=data)
         case _:
                 pass
     with Session() as session:

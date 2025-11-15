@@ -15,6 +15,8 @@ from bot.buttons.choosebuttons import returnreplymarkup, returninlinemarkup
 from create_bot import bot as BBot
 # Импорт функции вставки данных в таблицу
 from database.tablesclasses import updatedatesfromusers, find_id_in_table
+# Библиотека для работы с файлами
+import os.path
 
 # Роутер
 editprofile = Router()
@@ -28,6 +30,10 @@ class EditStates(StatesGroup):
     birthdate = State()
     town = State()
     typesport = State()
+    levelsport = State()
+    plase = State()
+    image = State()
+    description = State()
 
 # Обработка кнопки "Изменить профиль"
 @editprofile.message(F.text == buttons.texteditprofile)
@@ -177,7 +183,6 @@ async def edittypesport_insertdatesindb(message: Message, state: FSMContext):
     # Получаем нужное id типа спорта
     typesport = message.text
     id_type = find_id_in_table('kinds', typesport)
-    print(id_type)
     # Вставляем данные в базу данных
     updatedatesfromusers(message.from_user.id, 'type_sport', id_type)
     # Обнуляем состояние
@@ -190,10 +195,112 @@ async def edittypesport_insertdatesindb(message: Message, state: FSMContext):
     textmessage = bot_messages.messageeditprofile2
     markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
     await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
+
 # Функция редактирования уровня подготовки
+@editprofile.callback_query(F.data == "editlevelsport")
+async def editlevelsport_callback(call: CallbackQuery, state: FSMContext):
+    logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.texteditlevelsport}.")
+    statefunction = EditStates.levelsport
+    await state.set_state(statefunction)
+    markup = returnreplymarkup('registrationleveltraining', call.message.from_user.id)
+    await call.message.answer("Выберите новый уровень подготовки из списка ниже", reply_markup = markup)
+@editprofile.message(EditStates.levelsport, F.text)
+async def editlevelsport_insertdatesindb(message: Message, state: FSMContext):
+    # Логирование
+    logging.info(f"Пользователь {message.from_user.id} ввёл новый уровень подготовки: {message.text}")
+    # Получаем нужное id типа спорта
+    levelsport = message.text
+    id_type = find_id_in_table('levels', levelsport)
+    # Вставляем данные в базу данных
+    updatedatesfromusers(message.from_user.id, 'level_sport', id_type)
+    # Обнуляем состояние
+    await state.clear()
+    # Отправка сообщения 1
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваш уровень подготовки изменен.", reply_markup = markup)
+    # Отправка сообщения 2
+    textmessage = bot_messages.messageeditprofile2
+    markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
+    await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 
 # Функция редактирования места проведения
+@editprofile.callback_query(F.data == "editplacetrain")
+async def editplacetrain_callback(call: CallbackQuery, state: FSMContext):
+    logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.texteditplacetrain}.")
+    statefunction = EditStates.plase
+    await state.set_state(statefunction)
+    markup = returnreplymarkup('registrationplacetraining', call.message.from_user.id)
+    await call.message.answer("Выберите новое место проведения из списка ниже", reply_markup = markup)
+@editprofile.message(EditStates.plase, F.text)
+async def editplacetrain_insertdatesindb(message: Message, state: FSMContext):
+    # Логирование
+    logging.info(f"Пользователь {message.from_user.id} ввёл новое место проведения: {message.text}")
+    # Получаем нужное id места проведения
+    placetrain = message.text
+    id_place = find_id_in_table('places', placetrain)
+    # Вставляем данные в базу данных
+    updatedatesfromusers(message.from_user.id, 'place_train', id_place)
+    # Обнуляем состояние
+    await state.clear()
+    # Отправка сообщения 1
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваше место проведения изменено.", reply_markup = markup)
+    # Отправка сообщения 2
+    textmessage = bot_messages.messageeditprofile2
+    markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
+    await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)
 
 # Функция редактирования картинки профиля
+@editprofile.callback_query(F.data == "editimageprofile")
+async def editimageprofile_callback(call: CallbackQuery, state: FSMContext):
+    logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.texteditimageprofile}.")
+    statefunction = EditStates.image
+    await state.set_state(statefunction)
+    await call.message.answer("Загрузите новую картинку", reply_markup = ReplyKeyboardRemove())
+@editprofile.message(EditStates.image, F.photo)
+async def editimageprofile_insertdatesindb(message: Message, state: FSMContext):
+    # Логирование
+    logging.info(f"Пользователь {message.from_user.id} загрузил новую картинку: {message.text}")
+    # Сохраняем введённую картинку
+    telegramid = str(message.from_user.id)
+    url = "database/images/users/" + telegramid + ".png"
+    fileinfo = message.photo[-1]
+    await BBot.download(fileinfo, destination=url)
+    textuser = "Фотография загружена" if os.path.exists(url) == True else "Ошибка загрузки фотографии"
+    await state.update_data(imageuser=textuser)
+    # Обнуляем состояние
+    await state.clear()
+    # Отправка сообщения 1
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id,
+                            text="Ваша фотография изменена",
+                            reply_markup=markup)
+    # Отправка сообщения 2
+    textmessage = bot_messages.messageeditprofile2
+    markup = returninlinemarkup('changedatesinprofile', message.from_user.id)
+    await BBot.send_message(message.chat.id, text=textmessage,
+                            reply_markup=markup)
 
 # Функция редактирования описания
+@editprofile.callback_query(F.data == "editdescription")
+async def editdescription_callback(call: CallbackQuery, state: FSMContext):
+    logging.info(f"Пользователь {call.message.from_user.id} нажал на кнопку {buttons.texteditdescription}.")
+    statefunction = EditStates.description
+    await state.set_state(statefunction)
+    await call.message.answer("Введите новое описание:")
+@editprofile.message(EditStates.description, F.text)
+async def editdescription_insertdatesindb(message: Message, state: FSMContext):
+    # Логирование
+    logging.info(f"Пользователь {message.from_user.id} ввёл новое описание: {message.text}")
+    # Вставляем данные в базу данных
+    newdescription = message.text
+    updatedatesfromusers(message.from_user.id, 'description', newdescription)
+    # Обнуляем состояние
+    await state.clear()
+    # Отправка сообщения 1
+    markup = returnreplymarkup("editdatesinprofile", message.chat.id)
+    await BBot.send_message(message.chat.id, text="Ваше описание изменено.", reply_markup = markup)
+    # Отправка сообщения 2
+    textmessage = bot_messages.messageeditprofile2
+    markup = returninlinemarkup('changedatesinprofile',message.from_user.id)
+    await BBot.send_message(message.chat.id, text=textmessage,reply_markup=markup)

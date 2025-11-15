@@ -11,7 +11,7 @@ from aiogram.fsm.context import FSMContext
 import logging
 # Импорт бота (для скачивания картинки)
 from create_bot import bot as BBot
-# Библиотека для работы с Ботом
+# Библиотека для работы с файлами
 import os.path
 
 # Импорт сообщений для пользователей
