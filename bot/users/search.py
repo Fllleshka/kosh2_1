@@ -47,17 +47,22 @@ class formStates(StatesGroup):
 
 # Функция отправки сообщения о подходящих анкетах в базе
 @searchrouter.message(F.text == buttons.textfindtrainer)
-async def sendtelegramchannel(message: Message):
-    logging.info(f"Пользователь {message.from_user.id} нажал на кнопку {buttons.textfindtrainer}.")
-    # Проверка нахождения пользователя в базе
-    if checkuserformdatabase(message.from_user.id) == True:
+@searchrouter.message(F.text == buttons.textfindstalls)
+async def find(message: Message):
+    # Логирование нажатия на кнопку
+    if message.text == buttons.textfindtrainer:
+        logging.info(f"Пользователь {message.from_user.id} нажал на кнопку {buttons.textfindtrainer}.")
         # Получаем данные из базы данных
         datesfromdb = selectdatesfromdatabasebyrole('trainer')
-
+    else:
+        logging.info(f"Пользователь {message.from_user.id} нажал на кнопку {buttons.textfindstalls}.")
+        # Получаем данные из базы данных
+        datesfromdb = selectdatesfromdatabasebyrole('athlete')
+    # Проверка нахождения пользователя в базе
+    if checkuserformdatabase(message.from_user.id) == True:
         # Инициируем машину состояний
         states = formStates()
         states.insertdates()
-
 
         firstelem = datesfromdb[0]
         index = datesfromdb.index(firstelem)
@@ -117,3 +122,4 @@ async def previosform(message: Message, callback_query: types.CallbackQuery):
 async def previosform(message: Message):
     print("NEXT!!!")
     print("ID Callback next", message.message.message_id)
+    await message.ed

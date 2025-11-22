@@ -75,7 +75,6 @@ def returnreplymarkup(role, id_user):
         # Возвращаем данные после ввода описания
         case "registrationfinal":
             kb_list.append([buttons.savedatestodatabase])
-            kb_list.append([buttons.dataediting])
 
         # Возвратные данные для новых пользователей
         case "newuser":

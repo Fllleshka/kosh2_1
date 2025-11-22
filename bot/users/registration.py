@@ -3,7 +3,7 @@ from aiogram import Router, F
 # Импорт кнопок
 from bot.buttons.usersbuttons import Buttons
 # Импорт библиотеки для работы с ботом
-from aiogram import Router, F
+from aiogram import Router, F, types
 from aiogram.types import Message, ReplyKeyboardRemove
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
@@ -235,8 +235,7 @@ async def registration_discription(message: Message, state: FSMContext):
     await state.set_state(statefunction)
     # Отправка сообщения
     text = choosetext(statefunction)
-    markup = returnreplymarkup("registrationdiscription", None)
-    await message.answer(text, reply_markup=markup)
+    await message.answer(text, reply_markup = ReplyKeyboardRemove())
 
 # Функция сохранения описания к анкете
 @registration.message(Registration.discription, F.text)
@@ -250,8 +249,12 @@ async def registration_final(message: Message, state: FSMContext):
     # Отправка сообщения
     dates = await state.get_data()
     text = choosetext(None, dates)
+    pathtoimage = "database/images/users/" + str(message.from_user.id) + ".png"
+    photo = types.FSInputFile(path=pathtoimage)
     markup = returnreplymarkup("registrationfinal", None)
-    await message.answer(text, reply_markup=markup)
+    await message.answer_photo(caption = text,
+                               photo = photo,
+                               reply_markup = markup)
 
 # Функция отправки данных в базу данных
 @registration.message(Registration.insertdates, F.text)
