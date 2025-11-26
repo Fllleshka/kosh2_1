@@ -29,21 +29,27 @@ async def find(message: Message):
     if message.text == buttons.textfindtrainer:
         logging.info(f"Пользователь {message.from_user.id} нажал на кнопку {buttons.textfindtrainer}.")
         # Получаем данные из базы данных
-        datesfromdb = selectdatesfromdatabasebyrole('trainer')
+        table = 'trainer'
     else:
         logging.info(f"Пользователь {message.from_user.id} нажал на кнопку {buttons.textfindstalls}.")
         # Получаем данные из базы данных
-        datesfromdb = selectdatesfromdatabasebyrole('athlete')
+        table = 'athlete'
     # Проверка нахождения пользователя в базе
     if checkuserformdatabase(message.from_user.id) == True:
 
         # Формируем данные для отправки
+        datesfromdb = selectdatesfromdatabasebyrole(table)
         datatosend = selectdates(datesfromdb, 0)
 
         # Распределяем полученные данные для отправки
         photofile = types.FSInputFile(path = datatosend["urlphoto"])
         texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend["name"]
-        markup = returninlinemarkup('carusel', datatosend["urlforcontact"], datesfromdb, datatosend["previndex"], datatosend["nextindex"], datatosend["currentindex"])
+        markup = returninlinemarkup('carusel',
+                                    datatosend["urlforcontact"],
+                                    datesfromdb, datatosend["previndex"],
+                                    datatosend["nextindex"],
+                                    datatosend["currentindex"],
+                                    table)
 
         # Отправка сообщения
         await message.answer_photo(photo = photofile,
@@ -55,42 +61,72 @@ async def find(message: Message):
                              reply_markup=returnreplymarkup("newuser", message.from_user.id))
 
 # Функция обработки нажатия кнопки previos
-@searchrouter.callback_query(F.data.startswith('previos'))
-async def previosform(message: Message, callback_query: types.CallbackQuery):
-    # Получаем данные из базы данных
-    datesfromdb = (selectdatesfromdatabasebyrole('trainer'))
-
-    print("Previus!!!")
-    print("ID Callback previos", message.message.message_id)
-
-    await bot.delete_message(chat_id=message.message.chat.id, message_id=message.message.message_id)
-
-
-    textmessage = "🏆  " + str(raiting) + "\n\n" + name
-    #await bot.send_photo(chat_id=message.message.chat.id,)
-
-# Функция обработки нажатия кнопки next
-@searchrouter.callback_query(F.data.startswith('next'))
+'''@searchrouter.callback_query(F.data.startswith('previos'))
 async def previosform(callback: types.CallbackQuery):
-    print("NEXT!!!")
-    print(callback)
-    print(F.data.text)
-    print(callback.message)
-    print("============")
-    print(callback.message.chat.id)
-    print(callback.message.message_id)
-    print("============")
-    newcaption = "123"
-    # Изменение сообщения
-    await bot.edit_message_caption(
+    # Разбираем данные
+    callbackdata = callback.data.split(":")
+    # Название таблицы
+    table = callbackdata[2]
+    # Получаем данные из базы данных
+    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2])
+    # Формируем данные для отправки
+    datatosend = selectdates(datesfromdb, int(callbackdata[1]))
+    # Распределяем полученные данные для отправки
+    photofile = types.FSInputFile(path=datatosend["urlphoto"])
+    texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend[
+        "name"]
+    # Получаем кнопки внизу анкеты
+    markup = returninlinemarkup('carusel', datatosend["urlforcontact"],
+                                datesfromdb, datatosend["previndex"],
+                                datatosend["nextindex"],
+                                datatosend["currentindex"],
+                                table)
+
+    # Удаление сообщения
+    await bot.delete_message(
             chat_id = callback.message.chat.id,
-            message_id = callback.message.message_id,
-            caption = newcaption)
-    #await bot.edit_message_text("123", chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    #await bot.edit_message_text(inline_message_id=callback.inline_message_id,
-    #                            text="This inline message has been edited!",
-    #                            reply_markup=None)
-    #await callback.message.edit_text("Новый текст")
+            message_id = callback.message.message_id)
+    # Отправка нового
+    await bot.send_photo(
+            chat_id = callback.message.chat.id,
+            photo = photofile,
+            caption = texttocaption,
+            reply_markup = markup)
+
+'''
+# Функция обработки нажатия кнопки next, previos
+@searchrouter.callback_query(F.data.startswith('previos'))
+@searchrouter.callback_query(F.data.startswith('next'))
+async def nextform(callback: types.CallbackQuery):
+    # Разбираем данные
+    callbackdata = callback.data.split(":")
+    # Название таблицы
+    table = callbackdata[2]
+    # Получаем данные из базы данных
+    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2])
+    # Формируем данные для отправки
+    datatosend = selectdates(datesfromdb, int(callbackdata[1]))
+    # Распределяем полученные данные для отправки
+    photofile = types.FSInputFile(path=datatosend["urlphoto"])
+    texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend[
+        "name"]
+    # Получаем кнопки внизу анкеты
+    markup = returninlinemarkup('carusel', datatosend["urlforcontact"],
+                                datesfromdb, datatosend["previndex"],
+                                datatosend["nextindex"],
+                                datatosend["currentindex"],
+                                table)
+
+    # Удаление сообщения
+    await bot.delete_message(
+            chat_id = callback.message.chat.id,
+            message_id = callback.message.message_id)
+    # Отправка нового
+    await bot.send_photo(
+            chat_id = callback.message.chat.id,
+            photo = photofile,
+            caption = texttocaption,
+            reply_markup = markup)
 
 # Функция выборки данных
 def selectdates(data, index):
@@ -107,12 +143,12 @@ def selectdates(data, index):
 
     # Добавляем предыдущую анкету
     if index == 0:
-        returndict["previndex"] = len(data)
+        returndict["previndex"] = len(data)-1
     else:
         returndict["previndex"] = index - 1
 
     # Добавляем следующую анкету
-    if index == len(data):
+    if index == len(data)-1:
         returndict["nextindex"] = 0
     else:
         returndict["nextindex"] = index + 1
@@ -129,10 +165,6 @@ def selectdates(data, index):
         returndict["urlphoto"] = starturlphoto + "startimage.png"
     else:
         returndict["urlphoto"] = starturlphoto + "users/" + str(elem.id_telegram) + ".png"
-
-    # Вывод данных
-    for key, strdata in returndict.items():
-        print(key, "\t", strdata)
 
     # Возврат всех данных
     return returndict

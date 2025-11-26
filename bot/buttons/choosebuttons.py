@@ -106,7 +106,7 @@ def returnreplymarkup(role, id_user):
         input_field_placeholder="Воспользуйтесь меню:"
     )
 
-def returninlinemarkup(role, urltouser, datafromdb = None, previosindex = 0, nextindex = 0, currtentindex = 0):
+def returninlinemarkup(role, urltouser, datafromdb = None, previosindex = 0, nextindex = 0, currtentindex = 0, table = None):
     # Объявление класса с кнопками
     buttons = Buttons()
     # Создание кнопок
@@ -116,18 +116,18 @@ def returninlinemarkup(role, urltouser, datafromdb = None, previosindex = 0, nex
 
             # Стрелочка влево (предыдущий вариант)
             textpreviousbutton = "<--"
-            callbackdataprevios = 'previos:' + str(previosindex)
+            callbackdataprevios = 'previos:' + str(previosindex) + ":" + table
             previousbutton = InlineKeyboardButton(text=textpreviousbutton,
                                                   callback_data=callbackdataprevios)
 
             # Стрелочка вправо (следующий вариант)
             textnextbutton = "-->"
-            callbackdatanext = 'next:' + str(nextindex)
+            callbackdatanext = 'next:' + str(nextindex) + ":" + table
             nextbutton = InlineKeyboardButton(text=textnextbutton,
                                               callback_data=callbackdatanext)
 
             # Добавление центральной секции
-            textcenter = str(currtentindex) + "/" + str(len(datafromdb))
+            textcenter = str(currtentindex) + "/" + str(len(datafromdb)-1)
             centersection = InlineKeyboardButton(text=textcenter,
                                                  callback_data='center')
 
