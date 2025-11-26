@@ -106,49 +106,38 @@ def returnreplymarkup(role, id_user):
         input_field_placeholder="Воспользуйтесь меню:"
     )
 
-def returninlinemarkup(role, id_user, datafromdb = None, currentcontact = 0):
+def returninlinemarkup(role, urltouser, datafromdb = None, previosindex = 0, nextindex = 0, currtentindex = 0):
     # Объявление класса с кнопками
     buttons = Buttons()
     # Создание кнопок
     kb_list = [[]]
     match (role):
         case "carusel":
-            allcontacts = len(datafromdb)
-            textcenter = str(currentcontact+1) + "/" + str(allcontacts)
-
 
             # Стрелочка влево (предыдущий вариант)
             textpreviousbutton = "<--"
-            if currentcontact - 1 < 0:
-                previoscontact = len(datafromdb)
-            else:
-                previoscontact = currentcontact - 1
-            callbackdataprevios = 'previos:' + str(previoscontact)
+            callbackdataprevios = 'previos:' + str(previosindex)
             previousbutton = InlineKeyboardButton(text=textpreviousbutton,
                                                   callback_data=callbackdataprevios)
-            logging.info("========================")
-            logging.info("callbackdataprevios: " + callbackdataprevios)
-
 
             # Стрелочка вправо (следующий вариант)
             textnextbutton = "-->"
-            if currentcontact + 1 > len(datafromdb):
-                nextcontact = 0
-            else:
-                nextcontact = currentcontact + 1
-            callbackdatanext = 'next:' + str(nextcontact)
+            callbackdatanext = 'next:' + str(nextindex)
             nextbutton = InlineKeyboardButton(text=textnextbutton,
-                                              callback_data='next')
-            logging.info("callbackdatanext: " + callbackdatanext)
-            centersection = InlineKeyboardButton(text=textcenter, callback_data = 'center')
+                                              callback_data=callbackdatanext)
 
+            # Добавление центральной секции
+            textcenter = str(currtentindex) + "/" + str(len(datafromdb))
+            centersection = InlineKeyboardButton(text=textcenter,
+                                                 callback_data='center')
 
+            # Добавление нижней секции
+            contactbutton = InlineKeyboardButton(text='Связь', url=urltouser)
 
+            # Добавление первой строки
             kb_list.append([previousbutton, centersection, nextbutton])
-            contactbutton = InlineKeyboardButton(text='Связь',
-                                                  url = id_user)
+            # Добавление второй строки
             kb_list.append([contactbutton])
-            logging.info("========================")
 
         case "changedatesinprofile":
             # Кнопка редактирования имени

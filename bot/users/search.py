@@ -1,4 +1,6 @@
 # Импорт библиотеки для работы с ботом
+import json
+from cgi import print_environ_usage
 from gc import callbacks
 
 from aiogram import Router, F, types
@@ -19,32 +21,6 @@ from create_bot import bot
 searchrouter = Router()
 buttons = Buttons()
 
-# Машина состояний для анкет
-class formStates(StatesGroup):
-    def __init__(self):
-        self.dates = selectdatesfromdatabasebyrole('trainer')
-        startstate = State()
-        nextstate = State()
-        previosstate = State()
-
-    def insertdates(self):
-        for elem in self.dates:
-            name = elem.first_name + " " + elem.middle_name + " " + elem.last_name
-            raiting = elem.rating
-            if elem.id_telegram == 0:
-                urlforcontact = "tg://user?id=" + str(elem.id_telegram)
-                urlphoto = "database/images/startimage.png"
-            else:
-                urlforcontact = "tg://user?id=" + str(elem.id_telegram)
-                urlphoto = "database/images/users/" + str(
-                    elem.id_telegram) + ".png"
-            print("====================")
-            print(name)
-            print("\t", raiting)
-            print("\t", urlforcontact)
-            print("\t", urlphoto)
-            print("====================")
-
 # Функция отправки сообщения о подходящих анкетах в базе
 @searchrouter.message(F.text == buttons.textfindtrainer)
 @searchrouter.message(F.text == buttons.textfindstalls)
@@ -60,48 +36,23 @@ async def find(message: Message):
         datesfromdb = selectdatesfromdatabasebyrole('athlete')
     # Проверка нахождения пользователя в базе
     if checkuserformdatabase(message.from_user.id) == True:
-        # Инициируем машину состояний
-        states = formStates()
-        states.insertdates()
 
-        firstelem = datesfromdb[0]
-        index = datesfromdb.index(firstelem)
-        name = firstelem.first_name + " " + firstelem.middle_name + " " + firstelem.last_name
-        raiting = firstelem.rating
-        if firstelem.id_telegram == 0:
-            urlforcontact = "tg://user?id=" + str(firstelem.id_telegram)
-            urlphoto = "database/images/startimage.png"
-        else:
-            urlforcontact = "tg://user?id=" + str(firstelem.id_telegram)
-            urlphoto = "database/images/users/" + str(
-                firstelem.id_telegram) + ".png"
-        markup = returninlinemarkup('carusel', urlforcontact, datesfromdb)
-        textmessage = "🏆  " + str(raiting) + "\n\n" + name
-        photofile = types.FSInputFile(path=urlphoto)
+        # Формируем данные для отправки
+        datatosend = selectdates(datesfromdb, 0)
 
-        '''for element in datesfromdb:
-            name = element.first_name + " " + element.middle_name + " " + element.last_name
-            raiting = element.rating
-            if element.id_telegram == 0:
-                urlforcontact = "tg://user?id=" + str(element.id_telegram)
-                urlphoto = "database/images/startimage.png"
-            else:
-                urlforcontact = "tg://user?id=" + str(element.id_telegram)
-                urlphoto = "database/images/users/" + str(element.id_telegram) + ".png"
-            markup = returninlinemarkup('carusel', urlforcontact, allcontacts, 0)
-            textmessage = "🏆  " + str(raiting) + "\n\n" + name
-            photofile = types.FSInputFile(path=urlphoto)
-            print(name, "\t", raiting, "\t\t", urlforcontact, "\t", urlphoto)
-        '''
+        # Распределяем полученные данные для отправки
+        photofile = types.FSInputFile(path = datatosend["urlphoto"])
+        texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend["name"]
+        markup = returninlinemarkup('carusel', datatosend["urlforcontact"], datesfromdb, datatosend["previndex"], datatosend["nextindex"], datatosend["currentindex"])
 
-        send_message = await message.answer_photo(photo = photofile,
-                                   caption = textmessage,
+        # Отправка сообщения
+        await message.answer_photo(photo = photofile,
+                                   caption = texttocaption,
                                    reply_markup=markup)
-        print("ID отправленного сообщения: ",send_message.message_id)
 
     else:
         await message.answer("Не могу найти ваш аккаунт в базе.\nДавайте заведём его!",
-                             reply_markup=returnreplymarkup("newuser", message.from_user.id, ))
+                             reply_markup=returnreplymarkup("newuser", message.from_user.id))
 
 # Функция обработки нажатия кнопки previos
 @searchrouter.callback_query(F.data.startswith('previos'))
@@ -111,6 +62,7 @@ async def previosform(message: Message, callback_query: types.CallbackQuery):
 
     print("Previus!!!")
     print("ID Callback previos", message.message.message_id)
+
     await bot.delete_message(chat_id=message.message.chat.id, message_id=message.message.message_id)
 
 
@@ -119,7 +71,68 @@ async def previosform(message: Message, callback_query: types.CallbackQuery):
 
 # Функция обработки нажатия кнопки next
 @searchrouter.callback_query(F.data.startswith('next'))
-async def previosform(message: Message):
+async def previosform(callback: types.CallbackQuery):
     print("NEXT!!!")
-    print("ID Callback next", message.message.message_id)
-    await message.ed
+    print(callback)
+    print(F.data.text)
+    print(callback.message)
+    print("============")
+    print(callback.message.chat.id)
+    print(callback.message.message_id)
+    print("============")
+    newcaption = "123"
+    # Изменение сообщения
+    await bot.edit_message_caption(
+            chat_id = callback.message.chat.id,
+            message_id = callback.message.message_id,
+            caption = newcaption)
+    #await bot.edit_message_text("123", chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    #await bot.edit_message_text(inline_message_id=callback.inline_message_id,
+    #                            text="This inline message has been edited!",
+    #                            reply_markup=None)
+    #await callback.message.edit_text("Новый текст")
+
+# Функция выборки данных
+def selectdates(data, index):
+    returndict = dict()
+    elem = data[index]
+
+    # Получаем имя
+    name = elem.first_name + " " + elem.middle_name + " " + elem.last_name
+    returndict["name"] = name
+
+    # Добавляем рейтинг
+    raiting = elem.rating
+    returndict["raiting"] = raiting
+
+    # Добавляем предыдущую анкету
+    if index == 0:
+        returndict["previndex"] = len(data)
+    else:
+        returndict["previndex"] = index - 1
+
+    # Добавляем следующую анкету
+    if index == len(data):
+        returndict["nextindex"] = 0
+    else:
+        returndict["nextindex"] = index + 1
+
+    # Добавляем текущую анкету
+    returndict["currentindex"] = index
+
+    # Добавляем ссылку на профиль
+    returndict["urlforcontact"] = "tg://user?id=" + str(elem.id_telegram)
+
+    # Добавляем ссылку на фото
+    starturlphoto = "database/images/"
+    if elem.id_telegram == 0:
+        returndict["urlphoto"] = starturlphoto + "startimage.png"
+    else:
+        returndict["urlphoto"] = starturlphoto + "users/" + str(elem.id_telegram) + ".png"
+
+    # Вывод данных
+    for key, strdata in returndict.items():
+        print(key, "\t", strdata)
+
+    # Возврат всех данных
+    return returndict
