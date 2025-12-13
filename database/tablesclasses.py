@@ -248,30 +248,38 @@ def checkuserformdatabase(userid):
             return False
 
 # Функция поиска анкет, которые подходят под роль
-def selectdatesfromdatabasebyrole(role):
+def selectdatesfromdatabasebyrole(role, telegramid):
+
+
     # Создаём сессию
     Session = sessionmaker(bind=engine)
+
+    # Делаем запрос по поиску id города
+    with Session() as session:
+        town_id = session.query(Users).filter_by(id_telegram=telegramid).first()
+
+    # Выбор действия в зависимости от роли
     match(role):
         case "trainer":
             with Session() as session:
                 # Делаем запрос в БД
-                found_items = session.query(Users).filter_by(id_type=1).all()
+                found_items = session.query(Users).filter_by(id_type=1, id_town=town_id.id_town).all()
                 # Если объект найден
                 if found_items != None:
                     return found_items
                 # Если объект не найден
                 else:
-                    return None
+                    return session.query(Users).filter_by(id_type=1).all()
         case "athlete":
             with Session() as session:
                 # Делаем запрос в БД
-                found_items = session.query(Users).filter_by(id_type=2).all()
+                found_items = session.query(Users).filter_by(id_type=2, id_town=town_id.id_town).all()
                 # Если объект найден
                 if found_items != None:
                     return found_items
                 # Если объект не найден
                 else:
-                    return None
+                    return session.query(Users).filter_by(id_type=2).all()
         case _:
             return None
 

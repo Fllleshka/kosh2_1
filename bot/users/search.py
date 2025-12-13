@@ -38,7 +38,7 @@ async def find(message: Message):
     if checkuserformdatabase(message.from_user.id) == True:
 
         # Формируем данные для отправки
-        datesfromdb = selectdatesfromdatabasebyrole(table)
+        datesfromdb = selectdatesfromdatabasebyrole(table, message.from_user.id)
         datatosend = selectdates(datesfromdb, 0)
 
         # Распределяем полученные данные для отправки
@@ -60,40 +60,6 @@ async def find(message: Message):
         await message.answer("Не могу найти ваш аккаунт в базе.\nДавайте заведём его!",
                              reply_markup=returnreplymarkup("newuser", message.from_user.id))
 
-# Функция обработки нажатия кнопки previos
-'''@searchrouter.callback_query(F.data.startswith('previos'))
-async def previosform(callback: types.CallbackQuery):
-    # Разбираем данные
-    callbackdata = callback.data.split(":")
-    # Название таблицы
-    table = callbackdata[2]
-    # Получаем данные из базы данных
-    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2])
-    # Формируем данные для отправки
-    datatosend = selectdates(datesfromdb, int(callbackdata[1]))
-    # Распределяем полученные данные для отправки
-    photofile = types.FSInputFile(path=datatosend["urlphoto"])
-    texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend[
-        "name"]
-    # Получаем кнопки внизу анкеты
-    markup = returninlinemarkup('carusel', datatosend["urlforcontact"],
-                                datesfromdb, datatosend["previndex"],
-                                datatosend["nextindex"],
-                                datatosend["currentindex"],
-                                table)
-
-    # Удаление сообщения
-    await bot.delete_message(
-            chat_id = callback.message.chat.id,
-            message_id = callback.message.message_id)
-    # Отправка нового
-    await bot.send_photo(
-            chat_id = callback.message.chat.id,
-            photo = photofile,
-            caption = texttocaption,
-            reply_markup = markup)
-
-'''
 # Функция обработки нажатия кнопки next, previos
 @searchrouter.callback_query(F.data.startswith('previos'))
 @searchrouter.callback_query(F.data.startswith('next'))
@@ -103,7 +69,7 @@ async def nextform(callback: types.CallbackQuery):
     # Название таблицы
     table = callbackdata[2]
     # Получаем данные из базы данных
-    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2])
+    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2], callback.message.from_user.id)
     # Формируем данные для отправки
     datatosend = selectdates(datesfromdb, int(callbackdata[1]))
     # Распределяем полученные данные для отправки

@@ -1,6 +1,5 @@
 # Библиотека для работы с Ботом
 from types import NoneType
-
 from aiogram import Router, types
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, ReplyKeyboardRemove
