@@ -96,6 +96,11 @@ def returnreplymarkup(role, id_user):
         case "urlcompetitiontable":
             kb_list.append([buttons.checkparticipation])
 
+        # Выбор админа
+        case "admin":
+            kb_list.append([buttons.autorisationuser])
+            kb_list.append([buttons.autorisationadmin])
+
         case _:
             kb_list.append([buttons.checkaccaunt])
 
@@ -160,6 +165,8 @@ def returninlinemarkup(role, urltouser, datafromdb = None, previosindex = 0, nex
             kb_list.append([buttons.editimageprofile])
             # Кнопка редактирования описания
             kb_list.append([buttons.editdescription])
+
+
         case _:
             kb_list.append([buttons.buttoninluneurlgroup])
 

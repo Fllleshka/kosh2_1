@@ -48,3 +48,16 @@ async def cmd_help(message: Message):
     markup = types.InlineKeyboardMarkup(inline_keyboard=inline_button)
     await message.answer(text=textmessage, reply_markup=markup)
 
+# Функция обработки кнопки "Админка"
+@start_router.message(Command('admin'))
+async def cmd_admin(message: Message):
+    if (message.from_user.id == int(config("FOUNDER1TELEGRAMID"))
+            or message.from_user.id == int(config("FOUNDER2TELEGRAMID"))
+            or message.from_user.id == int(config("TECHNICALSPRCTELEGRAMID"))):
+        textmessage = "Выберите функционал"
+        markup = returnreplymarkup("admin", message.from_user.id)
+        await message.answer(text = textmessage, reply_markup=markup)
+    else:
+        textmessage = "У вас нет доступа к этому функционалу"
+        markup = returnreplymarkup(None, message.from_user.id)
+        await message.answer(text = textmessage, reply_markup=markup)

@@ -78,3 +78,10 @@ class Buttons:
     # Участие в соревнованиях
     textparticipation = "Принять участие в соревнованиях"
     checkparticipation = KeyboardButton(text=textparticipation)
+
+    # Кнопка вход как пользователь
+    textautorisationuser = "Войти как пользователь"
+    autorisationuser = KeyboardButton(text=textautorisationuser)
+    # Кнопка вход как администратор
+    textautorisationadmin = "Войти как администратор"
+    autorisationadmin = KeyboardButton(text=textautorisationadmin)
