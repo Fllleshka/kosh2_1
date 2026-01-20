@@ -266,4 +266,4 @@ async def insert_dates_in_database(message: Message, state: FSMContext):
     # Обнуляем состояние
     await state.clear()
     # Отправляем сообщение об успешной регистрации
-    await message.answer("Аккаунт успешно зарегистрирован", reply_markup=returnreplymarkup("registereduser", message.from_user.id))
+    await message.answer(bot_messages.messageinsertdatesindatabase, reply_markup=returnreplymarkup("registereduser", message.from_user.id))

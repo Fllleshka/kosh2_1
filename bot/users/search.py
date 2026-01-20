@@ -69,7 +69,7 @@ async def nextform(callback: types.CallbackQuery):
     # Название таблицы
     table = callbackdata[2]
     # Получаем данные из базы данных
-    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2], callback.message.from_user.id)
+    datesfromdb = selectdatesfromdatabasebyrole(callbackdata[2], callback.message.chat.id)
     # Формируем данные для отправки
     datatosend = selectdates(datesfromdb, int(callbackdata[1]))
     # Распределяем полученные данные для отправки

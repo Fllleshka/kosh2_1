@@ -2,6 +2,7 @@
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, KeyboardButton
 # Подключение кнопок
 from bot.buttons.usersbuttons import Buttons
+from bot.buttons.adminbuttons import AdminButtons
 # Библиотека для логирования
 import logging
 # Импорт класса работающего с базой данных
@@ -100,6 +101,9 @@ def returnreplymarkup(role, id_user):
         case "admin":
             kb_list.append([buttons.autorisationuser])
             kb_list.append([buttons.autorisationadmin])
+
+        case "adminsbutton":
+            kb_list.append([AdminButtons.savedatabase])
 
         case _:
             kb_list.append([buttons.checkaccaunt])
