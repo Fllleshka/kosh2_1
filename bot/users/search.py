@@ -39,7 +39,7 @@ async def find(message: Message):
 
         # Формируем данные для отправки
         datesfromdb = selectdatesfromdatabasebyrole(table, message.from_user.id)
-        datatosend = selectdates(datesfromdb, 0)
+        datatosend = selectdates(datesfromdb, 0, message.from_user.id)
 
         # Распределяем полученные данные для отправки
         photofile = types.FSInputFile(path = datatosend["urlphoto"])
@@ -74,8 +74,7 @@ async def nextform(callback: types.CallbackQuery):
     datatosend = selectdates(datesfromdb, int(callbackdata[1]))
     # Распределяем полученные данные для отправки
     photofile = types.FSInputFile(path=datatosend["urlphoto"])
-    texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend[
-        "name"]
+    texttocaption = "🏆  " + str(datatosend["raiting"]) + "\n\n" + datatosend["name"]
     # Получаем кнопки внизу анкеты
     markup = returninlinemarkup('carusel', datatosend["urlforcontact"],
                                 datesfromdb, datatosend["previndex"],
@@ -95,9 +94,12 @@ async def nextform(callback: types.CallbackQuery):
             reply_markup = markup)
 
 # Функция выборки данных
-def selectdates(data, index):
+def selectdates(data, index, idfordel):
+
+    newdata = deleteprofile(data, idfordel)
+    elem = newdata[index]
     returndict = dict()
-    elem = data[index]
+
 
     # Получаем имя
     name = elem.first_name + " " + elem.middle_name + " " + elem.last_name
@@ -109,12 +111,12 @@ def selectdates(data, index):
 
     # Добавляем предыдущую анкету
     if index == 0:
-        returndict["previndex"] = len(data)-1
+        returndict["previndex"] = len(newdata)-1
     else:
         returndict["previndex"] = index - 1
 
     # Добавляем следующую анкету
-    if index == len(data)-1:
+    if index == len(newdata)-1:
         returndict["nextindex"] = 0
     else:
         returndict["nextindex"] = index + 1
@@ -134,3 +136,13 @@ def selectdates(data, index):
 
     # Возврат всех данных
     return returndict
+
+# Функция удаление собственной анкеты
+def deleteprofile(data, idfordel):
+    indexfordel = k = 0
+    for elem in data:
+        if elem.id_telegram == idfordel:
+            indexfordel = k
+        k = k + 1
+    data.pop(indexfordel)
+    return data
