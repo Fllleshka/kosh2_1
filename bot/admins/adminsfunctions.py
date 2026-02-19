@@ -25,7 +25,7 @@ async def savedatabase(message: Message):
 async def savedatabase(message: Message):
     # Формируем название файла backup
     date = datetime.now()
-    newnamefile = f"database_backup_{str(date.day)}.{date.month}.{date.year}_{date.hour}.{date.minute}.{date.second}.db"
+    newnamefile = f"database_backup_{str(date.day)}.{date.month}.{date.year}_{date.hour}.{date.minute}.db"
     # Проверка файла базы данных на нахождение
 
     pathtodatabase = baseclass.databaseurl()
