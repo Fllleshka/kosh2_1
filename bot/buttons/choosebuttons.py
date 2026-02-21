@@ -104,6 +104,8 @@ def returnreplymarkup(role, id_user):
 
         case "adminsbutton":
             kb_list.append([AdminButtons.savedatabase])
+            kb_list.append([AdminButtons.alltrainer])
+            kb_list.append([AdminButtons.allathletes])
 
         case _:
             kb_list.append([buttons.checkaccaunt])
